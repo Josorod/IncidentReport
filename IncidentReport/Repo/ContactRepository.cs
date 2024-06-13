@@ -28,6 +28,10 @@ namespace IncidentReport.Repo
         {
             return await dc.Contacts.FindAsync(id);
         }
+        public async Task<Contact> GetContactByEmailAsync(string email)
+        {
+            return await dc.Contacts.FirstOrDefaultAsync(c => c.Email == email);
+        }
 
         public async Task<IEnumerable<Contact>> GetContactsAsync()
         {

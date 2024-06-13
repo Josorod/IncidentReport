@@ -15,8 +15,8 @@ namespace IncidentReport.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Contact>()
-                .HasMany(c => c.Accounts)
-                .WithMany(a => a.Contacts);
+                .HasMany(c => c.Accounts);
+                
 
             modelBuilder.Entity<Account>()
                 .HasMany(a => a.Incidents)

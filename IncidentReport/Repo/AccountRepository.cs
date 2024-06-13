@@ -28,6 +28,12 @@ namespace IncidentReport.Repo
         {
             return await dc.Accounts.FindAsync(id);
         }
+        public async Task<Account> GetAccountByNameAsync(string name)
+        {
+            return await dc.Accounts.Include(a => a.Contact)
+                                          .FirstOrDefaultAsync(a => a.Name == name);
+        }
+
 
         public async Task<IEnumerable<Account>> GetAccountsAsync()
         {
