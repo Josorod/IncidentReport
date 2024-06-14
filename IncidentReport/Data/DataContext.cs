@@ -14,22 +14,32 @@ namespace IncidentReport.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<Contact>()
+            //    .HasMany(c => c.Accounts); 
+            //modelBuilder.Entity<Account>()
+            //    .HasMany(a => a.Incidents)
+            //    .WithOne(i => i.Account)
+            //    .HasForeignKey(i => i.AccountId);
+            //modelBuilder.Entity<Account>()
+            //    .HasIndex(a => a.Name)
+            //    .IsUnique();
+            //modelBuilder.Entity<Contact>()
+            //    .HasIndex(c => c.Email)
+            //    .IsUnique();
             modelBuilder.Entity<Contact>()
-                .HasMany(c => c.Accounts);
-                
+                .HasKey(c => c.Id);
 
             modelBuilder.Entity<Account>()
-                .HasMany(a => a.Incidents)
-                .WithOne(i => i.Account)
-                .HasForeignKey(i => i.AccountId);
+                .HasOne(a => a.Contact)
+                .WithMany(c => c.Accounts)
+                .HasForeignKey(a => a.ContactId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Account>()
-                .HasIndex(a => a.Name)
-                .IsUnique();
-
-            modelBuilder.Entity<Contact>()
-                .HasIndex(c => c.Email)
-                .IsUnique();
+            modelBuilder.Entity<Incident>()
+                .HasOne(i => i.Account)
+                .WithMany(a => a.Incidents)
+                .HasForeignKey(i => i.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

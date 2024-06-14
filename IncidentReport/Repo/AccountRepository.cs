@@ -13,15 +13,18 @@ namespace IncidentReport.Repo
         {
             this.dc = dc;
         }
-        public void AddAccount(Account account)
+        public async Task AddAccount(Account account)
         {
-            dc.Accounts.Add(account);
+           await dc.Accounts.AddAsync(account);
         }
 
-        public void DeleteAccount(int Id)
+        public async Task DeleteAccount(int Id)
         {
-            var account = dc.Accounts.Find(Id);
-            dc.Accounts.Remove(account);
+            var account = await dc.Accounts.FindAsync(Id);
+            if (account != null)
+            {
+                dc.Accounts.Remove(account);
+            }
         }
 
         public async Task<Account> FindAccount(int id)

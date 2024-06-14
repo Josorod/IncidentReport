@@ -21,3 +21,14 @@ This project is an ASP.NET Core Web API for managing incidents, accounts, and co
 ```bash
 git clone https://github.com/Josorod/IncidentReport.git
 cd incident-management-api
+
+## Api testing
+
+### 1. Endpoints
+
+- **Create Incident:** `POST /api/incident/create`
+- **Get All Incidents:** `GET /api/incident/get-all`
+
+### 2. Example of incident creation with updated contact info.
+
+![Example Incident](Example_Req_Res.png)

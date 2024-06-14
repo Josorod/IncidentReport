@@ -57,49 +57,91 @@ namespace IncidentReport.Controllers
                 return NotFound("Account not found");
             }
 
-            // Check if the contact exists
-            var contact = await _contactRepository.GetContactByEmailAsync(request.ContactEmail);
+            try
+            {
+                // Check if the contact exists
+                var contact = await _contactRepository.GetContactByAccountNameAsync(request.AccountName);
 
-            if (contact != null)
-            {
-                // Update contact details if necessary
-                contact.FirstName = request.ContactFirstName;
-                contact.LastName = request.ContactLastName;
-                contact.Email = request.ContactEmail;
-            }
-            else
-            {
-                // Create new contact
-                contact = new Contact
+                if (contact != null)
                 {
-                    FirstName = request.ContactFirstName,
-                    LastName = request.ContactLastName,
-                    Email = request.ContactEmail
+                    // Update contact details if necessary
+                    contact.FirstName = request.ContactFirstName;
+                    contact.LastName = request.ContactLastName;
+
+                    // Link contact to account if not already linked
+                    if (account.ContactId != contact.Id)
+                    {
+                        account.ContactId = contact.Id;
+                    }
+                }
+                else
+                {
+                    // Create new contact
+                    contact = new Contact
+                    {
+                        FirstName = request.ContactFirstName,
+                        LastName = request.ContactLastName,
+                        Email = request.ContactEmail
+                    };
+
+                    await _contactRepository.AddContact(contact);
+
+                    // Link new contact to account
+                    account.ContactId = contact.Id;
+                }
+                var incident = new Incident
+                {
+                    Description = request.IncidentDescription,
+                    AccountId = account.Id
+                };
+                // Create new incident response
+                var incidentRes = new IncidentResDto
+                {
+                    ContactEmail = request.ContactEmail,
+                    IncidentDescription = request.IncidentDescription,
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                _contactRepository.AddContact(contact);
-                //await unitOfWork.SaveAsync();
+                _incidentRepository.AddIncident(incident);
+                await unitOfWork.SaveAsync();
+
+                return Ok(incidentRes);
             }
-
-            // Link contact to account if not already linked
-            if (account.ContactId != contact.Id)
+            catch (DbUpdateException ex)
             {
-                account.ContactId = contact.Id;
-               // await unitOfWork.SaveAsync();
+                // Log the exception (consider using a logging framework)
+                Console.WriteLine(ex.InnerException?.Message ?? ex.Message);
+
+                return StatusCode(500, "An error occurred while saving the changes to the database. Please check the inner exception for details.");
             }
-
-            // Create new incident
-            var incident = new Incident
+            catch (Exception ex)
             {
-                Description = request.IncidentDescription,
-                AccountId = account.Id
-            };
+                // Log the exception (consider using a logging framework)
+                Console.WriteLine(ex.Message);
 
-            _incidentRepository.AddIncident(incident);
-            await unitOfWork.SaveAsync();
-
-            return Ok(incident);
+                return StatusCode(500, "An unexpected error occurred. Please try again later.");
+            }
         }
+
+
+        // Method to get all incidents
+        [HttpGet]
+        [Route("api/incident/get-all")]
+        public async Task<IActionResult> GetAllIncidents()
+        {
+            try
+            {
+                var incidents = await _incidentRepository.GetIncidentsAsync();
+                return Ok(incidents);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (consider using a logging framework)
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "An error occurred while retrieving the incidents.");
+            }
+        }
+
     }
 }
 

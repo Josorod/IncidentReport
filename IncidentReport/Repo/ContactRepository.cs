@@ -13,24 +13,31 @@ namespace IncidentReport.Repo
         {
             this.dc = dc;
         }
-        public void AddContact(Contact contact)
+        public async Task AddContact(Contact contact)
         {
-            dc.Contacts.Add(contact);
+            await dc.Contacts.AddAsync(contact);
         }
 
-        public void DeleteContact(int Id)
+        public async Task DeleteContact(int Id)
         {
-            var contact = dc.Contacts.Find(Id);
-            dc.Contacts.Remove(contact);
+            var contact = await dc.Contacts.FindAsync(Id);
+            if (contact != null)
+            {
+                dc.Contacts.Remove(contact);
+            }
         }
 
         public async Task<Contact> FindContact(int id)
         {
             return await dc.Contacts.FindAsync(id);
         }
-        public async Task<Contact> GetContactByEmailAsync(string email)
+        public async Task<Contact> GetContactByAccountNameAsync(string accountName)
         {
-            return await dc.Contacts.FirstOrDefaultAsync(c => c.Email == email);
+            var account = await dc.Accounts
+                                        .Include(a => a.Contact) // Ensure Contact is included
+                                        .FirstOrDefaultAsync(a => a.Name == accountName);
+
+            return account?.Contact;
         }
 
         public async Task<IEnumerable<Contact>> GetContactsAsync()

@@ -7,8 +7,8 @@ namespace IncidentReport.Interfaces
     {
         Task<IEnumerable<Account>> GetAccountsAsync();
         Task<Account> GetAccountByNameAsync(string accountName);
-        void AddAccount(Account account);
-        void DeleteAccount(int Id);
+        Task AddAccount(Account account);
+        Task DeleteAccount(int Id);
         Task<Account> FindAccount(int id);
     }
 }
