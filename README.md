@@ -31,4 +31,4 @@ cd incident-management-api
 
 ### 2. Example of incident creation with updated contact info.
 
-![Example Incident](Example_Req_Res.png)
+![Example Incident](img/Example_Req_Res.PNG)
