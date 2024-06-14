@@ -15,13 +15,6 @@ This project is an ASP.NET Core Web API for managing incidents, accounts, and co
 - .NET 6.0 or later
 - SQL Server
 
-## Setup
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/Josorod/IncidentReport.git
-cd incident-management-api
-
 ## Api testing
 
 ### 1. Endpoints
@@ -32,3 +25,11 @@ cd incident-management-api
 ### 2. Example of incident creation with updated contact info.
 
 ![Example Incident](img/Example_Req_Res.PNG)
+
+## Setup
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Josorod/IncidentReport.git
+cd incident-management-api
+
